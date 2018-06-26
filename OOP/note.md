@@ -140,7 +140,7 @@
 - super
     - super不是关键字，而是一个类
     - super的作用是获取MRO(MethodResolustionOrder)列表中的第一个类
-    - super与父类直接没有任何实质性的关心，但通过super可以调用到父类
+    - super与父类直接没有任何实质性的关系，但通过super可以调用到父类
     - super使用两个方法，参见在构造函数中调用父类的构造函数
 - 单继承和多继承
     - 单继承：每个类只能继承一个类
@@ -327,3 +327,211 @@
         setName()
         Student.setName()
         Dog.setName
+# 调试技术
+- 调试流程：单元测试—>集成测试->交测试部
+- 分类：
+    - 静态调试：
+    - 动态调试：
+# pdb调试
+- pdb：python 调试库
+# pycharm调试
+- run/debug模式 案例 11.py
+- 断点，程序的某一行，程序在debug模式下，遇到断点就会暂停
+# 单元测试
+
+
+# LOG
+- https://www.cnblogs.com/yyds/p/6901864.html
+- logging
+- logging模块提供模块级别的函数记录日志
+- 包括四大组件
+## 1.日志相关概念
+- 日志
+- 日志级别（level）
+    - 不同的用户关注不同的程序信息,下面级别由低到高:
+    - DEBUG
+    - INFO
+    - NOTICE
+    - WARNING
+    - ERROR
+    - CRITICAL
+    - ALERT
+    - EMERGENCY
+- IO操作=>不要频繁操作
+- LOG的作用
+    - 调试
+    - 了解软件的运行情况
+    - 分析定位问题
+- 日志信息
+    - time
+    - 地点
+    - level
+    - 内容
+- 成熟的第三方日志
+    - log4j
+    - log4php
+    - logging
+# 2.logging模块
+- 日志级别
+    - 级别可自定义
+    - DEBUG
+    - INFO
+    - WARNING
+    - ERROR
+    - CRITICAL
+- 初始化/写日志实例需要指定级别，只有当级别等于或高于指定级别才被记录
+- 使用方式
+    - 直接使用logging(封装了其它组件)
+    - logging四大组件直接定制
+#2.1 logging模块级别的日志
+- 使用以下几个函数
+    - logging.debug(msg,*args,**kwargs)创建一条严重级别为DEBUG的日志记录
+    - logging.info创建一条严重级别为INFO的日志记录
+    - logging.warning创建一条严重级别为WARNING的日志记录
+    - logging.error创建一条严重级别为ERROR的日志记录
+    - logging.critical创建一条严重级别为CRITICAL的日志记录
+    - logging.log(level,*args,**kwargs)创建一条严重级别为level的日志记录
+    - logging.basicConfig(**kwargs)对root logger进行一次性配置
+- logging.baseConfig(**kwargs)对root logger进行一次性配置
+    - 只在第一次调用的时候起作用
+    - 不配置logger则使用默认值：
+        - 输出：sys.stderr
+        - 级别：WARNING
+        - 格式：level:log_name:content
+- 案例 12.py
+- format 参数
+    - %(name)s Logger的名字
+    - %(levelno)s 数字形式的日志级别
+    - %(levelname)s 文本形式的日志级别
+    - %(pathname)s 调用日志输出函数的模块的完整路径名，可能没有
+    - %(filename)s 调用日志输出函数的模块的文件名
+    - %(module)s 调用日志输出函数的模块名
+    - %(funcName)s 调用日志输出函数的函数名
+    - %(lineno)d 调用日志输出函数的语句所在的代码行
+    - %(created)f 当前时间，用UNIX标准的表示时间的浮 点数表示
+    - %(relativeCreated)d 输出日志信息时的，自Logger创建以 来的毫秒数
+    - %(asctime)s 字符串形式的当前时间。默认格式是 “2003-07-08 16:49:45,896”。逗号后面的是毫秒
+    - %(thread)d 线程ID。可能没有
+    - %(threadName)s 线程名。可能没有
+    - %(process)d 进程ID。可能没有
+    - %(message)s用户输出的消息
+# 2.2 logging模块的处理流程
+- 四大组件
+    - 日志器（Logger）：产生日志的一个接口
+    - 处理器（Handler）:把产生的日志发送到相应的目的地
+    - 过滤器（Filter）：更精细的控制那些日志输出
+    - 格式器（Formatter）:对输出信息进行格式化
+- logger
+    - 产生一个日志
+    - 操作
+        - logger.setLevel()设置日志器将会处理的日志消息的最低严重级别
+        - logger.addHandler()和logger.removeHandler 为改logger对象添加或者移除一个Handler
+        - logger.addFilter()和logger.removeFilter 为改logger对象添加或者移除一个Filter
+        - logger.debug:产生一条debug级别的日志，同理，info，error等
+        - logger.exception():创建类似于logger.error的日志消息
+        - logger.log()：获取一个明确的日志level参数创建一个日志记录
+    - 如何得到一个logger对象
+        - 实例化
+        - logging.getLogger()
+- Handler
+    - 把log发送到指定位置
+    - 方法
+        - setLevel
+        - setFormat
+        - addFilter,removeFilter
+    - 不需要直接使用，Handler是基类
+        logging.StreamHandler
+        logging.FileHandler
+        logging.handlers.RotatingFileHandler
+        logging.handlers.TimeRotaingFileHandler
+        logging.handlers.HTTPHandler
+        logging.handlers.SMTPHandler
+        logging.NullHandler
+- Format类
+    - 直接实例化
+    - 可以继承Format添加特殊内容
+    - 三个参数
+        - fmt:指定消息格式化字符串，如果不指定该参数则默认使用message的原始值
+        - datefmt：指定日期格式字符串，如果不指定该参数则默认使用"%Y-%m-%d-%H-%M-%S"
+        - style：python 3.2新增的参数，可取值为"%","{"和"""
+    - 案例13.py
+
+
+# 环境
+- xubuntu
+- anaconda
+- pycharm
+- python3.6
+- https://www.cnblogs.com/jokerbj/p/7460260.html
+- http://www.dabeaz.com/python/UnderstandingGIL.pdf
+# 多线程 vs 多进程
+- 程序：一堆代码以文本形式存入一个文档
+- 进程：程序运行的一个状态
+    - 包含地址空间，内存，数据栈等
+    - 每个进程有自己完全独立的运行环境，多进程共享数据是一个问题
+- 线程
+    - 一个进程的独立运行片段，一个进程可以有多个线程
+    - 轻量化的进程
+    - 一个进程的多个线程间共享数据和上下文运行环境
+    - 共享互斥问题
+- 全局解释锁（GIL）
+    - python代码的执行是python虚拟机进行控制
+    - 在主循环中只能有一个控制线程在执行
+- Python包
+    - thread：有问题，不好用，python3改成了_thread
+    - threading:通行的包
+- 案例14.py 老的_thread包的应用
+- threading的使用
+    - 直接利用threading.Thread生成Thread实例
+        1. t = threading.Thread(target = xxx,args = (xxx,))
+        2. t.start():启动多线程
+        3. t.join():等待多线程执行完成
+        4. 案例15.py
+        - 守护线程daemon
+            - 如果在程序中将子线程设置成守护线程，则子线程会在主线程结束时自动退出
+            - 一般认为，守护线程不重要或者不允许离开主线程独立运行
+            - 守护线程案例能否有效跟环境相关 案例16.py
+        - 线程的常用属性
+            - threading.currentThread:返回当前线程变量
+            - threading.enumerate返回一个包含正在运行线程的list，正在运行是在开始后结束前
+            - threading.activeCount:返回正在运行的线程数量
+            - thr.setName:给线程起个名字
+            - thr.getName:得到线程的名字
+        - 直接继承threading.Thread
+            - 直接继承Thread
+            - 重写run函数
+            - 类案例可以直接运行
+        - 另一种写法见案例17
+- 共享变量
+    - 共享变量：当多个线程同时访问一个变量时，会产生共享变量的问题
+    - 案例18.py 
+    - 解决变量：锁，信号灯。
+    - 锁（LOCK）：
+        - 是一个标准：表示一个线程在占用一些资源
+        - 使用方法
+            - 上锁
+            - 使用共享资源，放心的用
+            - 取消锁，释放锁
+        - 案例19.py
+        - 锁谁：哪个资源需要多个线程共享，锁哪个
+        - 理解锁：锁其实不是锁住谁，而是一个令牌
+    - 线程安全问题：
+        - 如果一个资源/变量，它对于多个线程来讲，不用加锁也不会引起任何问题，则称为线程安全
+        - 线程不安全变量类型：list,set,dict
+        - 线程安全变量类型：queue
+    - 生产者消费者问题
+        - 一个模型，可以用来搭建消息队列，案例20.py
+        - queue是一个用来存放变量的数据结构，特点是先进先出，内部元素排队，可以理解成一个特殊的list
+    - 死锁问题，案例21.py
+    - 死锁解决方法，案例22.py
+    - semaphore 信号灯:
+        - 允许一个资源最多由几个多线程同时使用，案例23.py
+    - Timer 案例24.py
+        - Timer是利用多线程，在指定时间后启动一个线程
+    - 可重入锁
+        - 一个锁，可以被一个线程多次申请
+        - 主要解决递归调用的时候，需要申请锁的情况
+        - 案例 25.py
+    
+    
+            
