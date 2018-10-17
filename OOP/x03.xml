@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<School>
+    <Teacher>
+        <Name>Liudana</Name>
+        <Age details="Age for year 2010">18</Age>
+        <Mobile>13260446055</Mobile>
+    </Teacher>
+    <Student>
+        <Name test="LisiLisi">Lisi</Name>
+        <Age>19</Age>
+        <Mobile>15578875040</Mobile>
+    <ADDer a="b">&#25105;&#21152;&#30340;</ADDer></Student>
+    <Student>
+        <Name details="&#20182;&#26159;&#29677;&#38271;" test="LiliLili">Lili</Name>
+        <Age details="the youngest in the class">14</Age>
+        <Mobile>13312251452</Mobile>
+    </Student>
+    
+</School>

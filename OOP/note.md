@@ -532,6 +532,166 @@
         - 一个锁，可以被一个线程多次申请
         - 主要解决递归调用的时候，需要申请锁的情况
         - 案例 25.py
+        
+# 线程替代方案
+- subprocess
+    - 完全跳过线程，使用进程
+    - 是python线程的主要替代方案
+    - python2.4后引入
+- multiprocess
+    - 使用threading接口派生，使用子进程
+    - 允许为多核或者cpu派生进程，接口与threading非常相似
+    - python2.6
+
+- concurrent.futures
+    - 新的异步执行模块
+    - 任务级别的操作
+    - python3.2后引入
+# 多进程
+- 进程间通讯（InterprocessCommunication,IPC）
+- 进程之间无任何共享状态
+- 进程的创建
+    - 直接生成Process实例对象，案例26
+    - 派生子类，案例27
+- 在os中查看pid,ppid以及他们之间的关系
+    - 案例28
     
+- 生产者消费者模型
+    - JoinableQueue 
+    - 案例29   
+    - 队列中哨兵的使用，案例30
+   
+
+# 结构化文件存储
+- xml json
+- 为了解决不同设备之间的信息交换
+- xml
+- json
+- xml文件
+- 参考资料
+    - https://docs.python.org/3/library/xml.etree.elementtree.html
+    - http://www.runoob.com/python/python-xml.html
+    - https://blog.csdn.net/seetheworld518/article/details/49535285
+- xml(eXtensibleMarkupLanguage) 可扩展标记语言
+    - 标记语言，语言中使用尖括号括起来的文本字符串标记
+    - 可扩展：用户可以自己定义需要的标记
+    - 例如：
+            <Teacher>
+                自定义标记Teacher
+                在两个标记之间任何内容都应该跟Teacher相关
+            </Teacher>
+    - 是w3c组织制定的一个标准
+    - xml描述的是数据本身：即数据的结构和语义
+    - HTML侧重于如何显示web页面中的数据
     
-            
+- xml文件的构成
+    - 处理指令（可以认为一个文件内只有一个处理指令）
+        - 最多只有一行
+        - 且必须在第一行
+        - 内容是与xml本身处理相关的一些声明和指令
+        - 以xml关键字开头
+            - 一般用于声明xml的版本和采用的编码
+                - version属性时必须的
+                - encoding属性用来指出xml解释器使用的编码
+            - 根元素有且只能有一个
+        - 子元素
+        - 属性
+        - 内容
+            - 表明标签所存储的信息
+        - 注释
+            - 起说明作用的信息
+            - 注释不能嵌套在标签内
+            - 只有在注释的开始和结尾使用双短横线
+            - 三短横线只能出现在注释的开头而不能用在结尾
+        
+    - 保留字符的使用
+        - xml中使用的符号可能跟实际符号相冲突，典型就是左右尖括号
+        - 使用实体引用(EntityReference)来表示保留字符
+                <score>score>80</score> 有错误，xml不能出现>
+                <score>score&gt;80</score>使用实体引用
+        - 把含有保留字符的部分放在CDATA块内部，CDATA块把内部信息视为不需要转义
+                <![CDATA[
+                    select name,age
+                    from Student
+                    where score>80
+                    ]]>   
+        - 常用的需要转义的保留字符和对应实体引用
+            - &:&amp；
+            - <:&lt；           
+            - >:&gt；
+            - ':&apos；
+            - ":&quot；
+            - 一共五个，每个实体引用都以&开头并且以分号结尾
+    - xml标签的命名规则
+        - Pascal命名法
+        - 以单词表示，第一个字母大写
+        - 大小写严格区分
+        - 配对的标签必须一致
+        
+    - 命名空间
+        - 为了防止命名冲突
+              <Student type="web">
+                  <Name>
+                      haha
+                  </Name>
+                  <Age>
+                       18
+                  </Age>
+              </Student>
+              <Room>
+                  <Location>
+                        1-23-1
+                  </Location>   
+                        
+                  <Name>
+                        2014
+                  </Name>
+        - 如果归并上述内容信息，会产生冲突
+        - 为了避免冲突，需要给可能冲突元素添加命名空间
+        - xmlns：xml name space的缩写
+            <Schooler xmlns:student="http://my_student" xmlns:room="http://my_room">
+                <student:name>haha</Student:name>
+                <room:name>2014</room:name>
+                
+# xml访问
+## 读取
+- xml读取分两个主要技术，SAX,DOM
+- SAX(Simple API for XML):
+    - 基于事件驱动的API
+    - 利用SAX解析文档设计到解析器和事件两部分
+    - 特点：
+        - 快
+        - 流式读取
+        
+- DOM 
+    - 是w3c规定的XML编程的接口
+    - 一个XML文件在缓存中以树形结构保存，读取
+    - 用途
+        - 定位浏览XML的任一节点信息
+        - 添加删除相应内容
+    - minidom
+        - minidom.parse(filename):加载读取的xml文件，filename也可以是xml代码
+        - doc.documentElement:获取xml文档对象，一个xml文件只有一个对应的文档对象
+        - node.getAttribute(attr_name):获取xml节点的属性值
+        。。。。
+        案例v01
+    - etree
+        - 以树形结构来表示xml
+        - root.getiterator:得到相应的可迭代的node集合
+        - root.iter
+        - find(node_name)：返回一个node_name的节点
+        - root.findall(node_name):返回多个node_name的节点
+        。。。。
+        - 案例v02
+        
+- xml文件写入
+    - 更改
+        - ele.set:修改属性
+        - ele.append：添加子元素
+        - ele.remove：删除元素
+        - 案例v03
+    - 生成创建
+        - SubElement 案例v04
+        - minidom 写入  自己查资料
+        - etree 创建    
+         

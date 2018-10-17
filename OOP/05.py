@@ -1,5 +1,5 @@
 class A():
     def swim(self):
-        print("swimming")
+        print("swimmin")
 a = A()
 

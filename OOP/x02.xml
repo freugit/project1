@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<School>
+    <Teacher>
+        <Name>Liudana</Name>
+        <Age details="Age for year 2010">18</Age>
+        <Mobile>13260446055</Mobile>
+    </Teacher>
+    <Student>
+        <Name>Lisi</Name>
+        <Age>19</Age>
+        <Mobile>15578875040</Mobile>
+    </Student>
+    <Student>
+        <Name details="他是班长">Lili</Name>
+        <Age details="the youngest in the class">14</Age>
+        <Mobile>13312251452</Mobile>
+    </Student>
+    <!--这是一个例子-->
+</School>

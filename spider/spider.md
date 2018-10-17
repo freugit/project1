@@ -190,3 +190,302 @@
     
 - get返回内容
     - 案例v21
+    
+- post
+    - rsp = requests.post(url,data=data)
+    - 案例v22
+    - data,headers要求dict类型
+    
+- proxy
+    - 代码示例： 
+    proxies = {
+    "http":"address of proxy"
+    "https":"address of proxy"
+    }
+    rsp = requests.request("get",url,proxies=proxies)
+    - 代理有可能报错，如果使用人数多，考虑安全问题，可能会被强行关闭
+
+- 用户验证
+    - 代理验证，代码示例：
+            #可能需要使用HTTP basic Auth,可以这样
+            proxy={"http":"china:123456@192.168.1.123:4444"}
+            rsp = requests.get("http://www.baidu.com,proxies=proxy) 
+        
+    - web客户端验证
+        - 如果遇到web客户端验证，需要添加auth=(用户名,密码)
+            auth = ("test1","123456") #授权信息
+            rsp = requests.get("http://www.baidu.com",auth=auth)
+            
+- cookie
+    - requests可以自动处理cookie信息
+            rsp = requests.get("http://xxxxxx")
+            #如果对方服务器传送过来cookie信息，则可以通过反馈的cookies属性得到
+            #返回一个cookiejar实例
+            cookiejar = rsp.cookies
+            
+            #可以将cookiejar转换成字典
+            cookiedict = requests.utils.dict_from_cookiejar(cookiejar)   
+
+- session
+    - 跟服务器端session不是一个东西
+    - 模拟一次会话，从客户端浏览器链接服务器开始，到客户端浏览器断开
+    - 能让我们跨请求保持一些参数，比如在同一个session实例发出的所有请求之间保持cookie   
+            #创建session对象，可以保持cookie值
+            ss = requests.session()
+            headers = {"User-Agent":"xxxxx"}
+            data = {"name":"xxxxx"}
+            #此时，由创建的session管理请求
+            ss.post("http://www.baidu.com",data=data,headers=headers)
+            rsp = ss.get("xxxxxxx")
+            
+- https请求验证ssl证书
+    - 参数verify负责表示是否需要ssl证书，默认是True
+    - 如果不需要验证ssl证书，则设置成False表示关闭
+            rsp = requests.get("https://www.baidu.com",verify=False)
+            #如果用verify=True访问12306，会报错，因为证书有问题            
+
+
+
+# 页面的解析和数据提取
+- 结构化数据：先有结构，再谈数据
+    - JSON文件
+        - JSON Path
+        - 转换成Python类型进行操作（JSON类）
+    - XML文件
+        - 转换成Python类型（xmltodict）
+        - XPath
+        - CSS选择器
+        - 正则
+- 非结构化的数据：先有数据，再谈结构
+    - 文本
+    - 电话号码
+    - 邮箱地址
+        - 通常处理此类数据，使用正则表达式
+    - Html文件
+        - 正则
+        - XPath
+        - CSS选择器
+        
+        
+# 正则表达式
+- 一套规则，可以在字符串文本中进行搜索替换等
+- 案例v23 re的基本使用流程，match的基本使用
+- 正则常用方法：
+    - match:从开始位置开始查找，一次匹配
+    - search:从任何位置查找，一次匹配
+    - findall：全部匹配，返回列表
+    - finditer:全部匹配，返回迭代器
+    - split：分割字符串，返回列表
+    - sub:替换
+    - 案例v24 search使用
+    - 案例v25 findall,finditer使用
+
+- 匹配中文
+    - 中文unicode的范围主要在[u4e00-u9fa5]
+    - 案例v26
+
+- 贪婪与非贪婪模式
+    - 贪婪模式：在整个表达式匹配成功的前提下，尽可能多的匹配
+    - 非贪婪模式：在整个表达式匹配成功的前提下，尽可能少的匹配
+    - python里面默认是贪婪模式
+    - 例如：
+        - 查找文本abbbbbbbcccc
+        - re是 ab*
+        - 贪婪模式结果是abbbbbbb
+        - 非贪婪结果是a
+        
+# XML
+- XML(EXtensibleMarkupLanguage)
+- http://www.w3school.com.cn/xml/index.asp
+- 案例v27.xml
+- 概念：父节点、子节点、先辈节点、兄弟节点、后代节点
+
+# XPath
+- XPath(XML Path Language)，是一门在xml文档中查找信息的语言
+- 官方文档：http://www.w3school.com.cn/xpath/index.asp
+- XPath开发工具
+    - 开源的XPath表达式工具：XMLQuire
+    - chrome插件：XPath Helper
+    - Firefox插件：XPath CHecker
+
+- 常用的路径表达式：
+    - nodename：选取此节点的所有子节点
+    - /：从根节点开始选
+    - //：选取元素，而不考虑元素的具体位置
+    - .：当前节点
+    - ..：父节点
+    - @：选取属性
+    - 案例:
+        - bookstore:选取bookstore下面所有的子节点
+        - /bookstore:选取根元素bookstore
+        - bookstore/book：选取bookstore的所有为book的子元素
+        - //book:选取book子元素
+        - //@lang：选取名称为lang的所有属性
+        
+- 谓语(Predicates)
+    - 谓语用来查找某个特定的节点，写在方括号中
+    - /bookstore/book[1]：选取第一个属于bookstore下面叫做book的元素 
+    - /bookstore/book[last()]：选取最后一个属于bookstore下面叫做book的元素
+    - /bookstore/book[last()-1]：选取倒数第二个属于bookstore下面叫做book的元素
+    - /bookstore/book[position()<3]：选取前两个属于bookstore下面叫做book的元素
+    - /bookstore/book[@lang]：选取含有属性lang的属于bookstore下面叫做book的元素
+    - /bookstore/book[@lang="cn"]：选取含有属性lang，且值为cn的属于bookstore下面叫做book的元素
+    - /bookstore/book[@price < 90]：选取含有属性price，且小于90的属于bookstore下面叫做book的元素
+    - /bookstore/book[@price<90]/title：选取含有属性price，且小于90的属于bookstore下面叫做book的元素下面的子元素title
+- 通配符
+    - *：任何元素节点
+    - @*：匹配任何元素节点
+    - node():匹配任意类型的节点
+    
+- 选取多个路径
+    - //book/title | //book/author：选取book元素中的title和author元素
+    - //title | //price：选取文档中的所有title和price元素
+
+# lxml库
+- python的HTML/XML的库
+- 官方文档：http://lxml.de/index.html
+
+
+- 功能：
+    - 解析HTML 案例v28
+    - xml文件读取，etree和XPath的配合使用，案例v29.py
+    
+# CSS选择器 BeautifulSoup4
+- 现在使用BeautifulSoup4
+- http://beautifulsoup.readthedocs.io/zh_CN/v4.4.0/
+- 几个常用工具提取信息比较：
+    - 正则：很快，不好用，不需安装
+    - beautifulsoup：慢，使用简单，安装简单
+    - lxml：比较快，使用简单，安装一般
+    
+- 案例v30.py
+
+- 四大对象
+    - Tag
+    - NavigableString
+    - BeautifulSoup
+    - Comment
+- Tag
+    - 对应Html中的标签
+    - 可以通过soup.tag_name
+    - tag两个重要的属性
+        - name 
+        - attrs
+    - 案例v31.py
+
+- NavigableString
+    - 对应内容值，用法，soup.tag_name.string
+    
+- BeautifulSoup
+    - 表示的是一个文档的内容，大部分可以把它当做tag对象
+    - 一般我们可以用soup来表示
+    
+- Comment
+    - 特殊类型的NavigableString对象
+    - 对其输出，则内容不包括注释符号
+
+- 遍历文档对象
+    - contents：tag的子节点以列表的方式给出
+    - children：子节点以迭代器形式返回
+    - descendants：子孙节点
+    - string
+    - 案例v32 
+    
+- 搜索文档对象
+    - find_all(name,attrs,recursive,text,**kwargs)
+        - name:按照字符串搜索，可以传入的内容为：
+            - 字符串
+            - 正则表达式
+            - 列表
+        - kwargs参数：可以用来表示属性
+        - text：对应tag的文本值
+        - 案例v32
+        
+- css选择器
+    - 使用soup.select，返回一个列表
+    - 通过标签名称：soup.select("title")
+    - 通过类名：soup.select(".content")
+    - id查找：soup.select("#name_id")
+    - 组合查找:soup.select("div #input_content")
+    - 属性查找：soup.select("img[class='photo']")
+    - 获取tag内容：tag.get_text
+    - 案例v33
+    
+# 动态HTML
+## 爬虫和反爬虫
+## 动态HTML介绍
+- JavaScript
+- jQuery
+- Ajax
+- DHTML
+- Python采集动态数据
+    - 从JavaScript代码入手采集
+    - Python第三方库运行JavaScript，直接采集你在浏览器看到的页面
+## Selenium+PhantomJS
+- Selenium：web自动化测试工具
+    - 自动加载页面
+    - 获取数据
+    - 截屏
+    - 安装：pip install selenium=2.48.0
+    - 官网：http://selenium-python.readthedocs.io/index.html
+    
+- PhantomJS(幽灵)
+    - 基于WebKit的无界面浏览器
+    - 官网：http://phantomjs.org/download.html
+- Selenium 库有一个WebDriver的API
+- WebDriver可以跟页面上的元素进行各种交互，用它可以来进行爬取
+- 案例v34
+- chrome + Chromedriver
+    - 下载安装chrome
+    - 下载安装chromedriver
+- Selenium操作主要分两大类：
+    - 得到 UI元素
+        - find_element_by_id
+        - find_elements_by_name
+        - find_elements_by_xpath
+        - find_elements_by_link_text
+        - find_elements_by_partial_link_text
+        - find_elements_by_tag_name
+        - find_elements_by_class_name
+        - find_elements_by_css_selector
+    - 基于UI元素操作的模拟
+        - 单击
+        - 右键
+        - 拖拽
+        - 输入
+        - 可以通过导入ActionChains来做到
+    - 案例v35
+   
+ # 验证码问题
+ - 验证码：防止机器人或爬虫
+ - 分类：
+    - 简单图片
+    - 极验，官网www.geetest.com
+    - 12306
+    - 电话
+    - google验证
+    
+ - 验证码破解：
+    - 通用方法：
+        - 下载网页和验证码
+        - 手动输入验证号码
+    - 简单图片
+        - 使用图像识别软件或者文字识别软件
+        - 可以使用第三方图像验证码破解网站，www.chaojiying.com
+    - 极验
+        - 破解比较麻烦
+        - 可以模拟鼠标等移动
+        - 一直在进化
+    
+    - 12306
+    - 电话
+        - 语音识别
+    - google验证
+ # Tesseract
+- 机器视觉领域的基础软件
+- OCR:OpticalCharacterRecognition 光学文字识别
+- Tesseract:一个OCR库，由google赞助
+- 案例v36   
+ 
+    
+      
